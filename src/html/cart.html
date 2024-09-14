@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<!-- Head -->
+{{> (config config.partials.head) title=config.defaultPageTitle }}
+
+<body class="{{ config.classes.body }}">
+
+    <!-- Main Section-->
+    <section class="mt-0 overflow-lg-hidden {{ config.classes.content }} vh-lg-100">
+        <!-- Page Content Goes Here -->
+        <div class="container">
+            <div class="row g-0 vh-lg-100">
+                <div class="col-12 col-lg-7 pt-5 pt-lg-10">
+                    <div class="pe-lg-5">
+                        {{> checkout/checkout-header active-cart="true" }}
+                        <div class="mt-5">
+                            <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                <tbody class="border-0" id="cartItems">
+                                    <!-- Dynamic content will be inserted here by JavaScript -->
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0">
+                    <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
+                        {{> cart/cart-summary }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Content -->
+    </section>
+    <!-- / Main Section-->
+
+    <!-- Theme JS -->
+    {{> footer/scripts }}
+    <script>
+        function populateCartPage() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemElement = document.createElement('tr');
+                itemElement.innerHTML = `
+                    <td class="ps-0 py-3">
+                        <div class="d-flex align-items-center">
+                            <a href="{{webRoot}}/product.html">
+                                <picture class="d-block bg-light">
+                                    <img class="img-fluid" src="${item.img}" alt="HTML Bootstrap Template by Pixel Rocket">
+                                </picture>
+                            </a>
+                            <div class="ms-3">
+                                <h6 class="mb-0">${item.name}</h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="pe-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="d-block text-muted fw-bolder">Qty: ${item.quantity}</span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center">
+                                <p class="mb-0 fw-bolder">$${(item.price * item.quantity).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+                total += item.price * item.quantity;
+            });
+
+            document.querySelector('.cart-summary-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        populateCartPage();
+    </script>
+
+</body>
+
+</html>
